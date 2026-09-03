@@ -132,17 +132,20 @@ function Index() {
     }
 
     setSubmitting(true);
-    const created: string[] = [];
+    const created: { day: string; code: string }[] = [];
     const full: string[] = [];
     const duplicated: string[] = [];
 
     for (const day of targetDays) {
-      const { error: insertError } = await supabase
-        .from("reservations")
-        .insert({ full_name: cleanName, travel_date: day, stop });
-      if (!insertError) created.push(day);
-      else if (insertError.message.includes("CAPACITY_FULL")) full.push(day);
-      else if (insertError.code === "23505") duplicated.push(day);
+      const { data: code, error: insertError } = await supabase.rpc("create_reservation", {
+        _full_name: cleanName,
+        _travel_date: day,
+        _stop: stop,
+      });
+      if (!insertError && code) created.push({ day, code });
+      else if (insertError?.message.includes("CAPACITY_FULL")) full.push(day);
+      else if (insertError?.code === "23505" || insertError?.message.includes("duplicate"))
+        duplicated.push(day);
       else full.push(day);
     }
 
