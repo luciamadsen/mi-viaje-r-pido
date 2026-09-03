@@ -278,13 +278,6 @@ function Index() {
                       className="flex items-center justify-between rounded-lg bg-secondary px-3 py-2"
                     >
                       <span className="text-sm font-medium">{r.full_name}</span>
-                      <button
-                        type="button"
-                        onClick={() => void cancel(r.id)}
-                        className="text-xs font-semibold text-destructive hover:underline"
-                      >
-                        Cancelar
-                      </button>
                     </li>
                   ))}
                 </ul>
