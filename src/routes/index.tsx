@@ -8,7 +8,7 @@ import {
   shortLabel,
   stopShortName,
   toISODate,
-  upcomingWeekdays,
+  upcomingMonths,
   weekDaysOf,
 } from "@/lib/shuttle";
 
@@ -44,8 +44,11 @@ type Reservation = {
 type Confirmation = { name: string; stop: string; days: string[] };
 
 function Index() {
-  const days = useMemo(() => upcomingWeekdays(), []);
+  const months = useMemo(() => upcomingMonths(3), []);
+  const days = useMemo(() => months.flatMap((m) => m.days), [months]);
+  const [selectedMonth, setSelectedMonth] = useState(() => months[0]?.key ?? "");
   const [selectedDay, setSelectedDay] = useState(() => days[0] ?? toISODate(new Date()));
+  const visibleDays = months.find((m) => m.key === selectedMonth)?.days ?? [];
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
 
