@@ -175,7 +175,7 @@ function Index() {
       {/* Day selector */}
       <section className="-mt-5 px-3">
         <div className="rounded-2xl bg-card p-3 shadow-[var(--shadow-card)]">
-          <div className="mb-2 grid grid-cols-3 gap-2">
+          <div className="mb-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
             {months.map((m) => (
               <button
                 key={m.key}
