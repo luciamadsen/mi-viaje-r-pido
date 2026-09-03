@@ -66,6 +66,38 @@ export function longLabel(iso: string): string {
   return `${DAY_NAMES[d.getDay()]} ${d.getDate()} de ${MONTH_NAMES[d.getMonth()]}`;
 }
 
+export type MonthOption = { key: string; label: string; days: string[] };
+
+/** Months with remaining weekdays (Mon-Fri) from today onward. Past days never appear. */
+export function upcomingMonths(count = 3): MonthOption[] {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayISO = toISODate(today);
+  const months: MonthOption[] = [];
+  for (let i = 0; i < count; i++) {
+    const first = new Date(today.getFullYear(), today.getMonth() + i, 1);
+    const year = first.getFullYear();
+    const month = first.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const days: string[] = [];
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(year, month, d);
+      const dow = date.getDay();
+      const iso = toISODate(date);
+      if (dow >= 1 && dow <= 5 && iso >= todayISO) days.push(iso);
+    }
+    if (days.length > 0) {
+      const name = MONTH_NAMES[month]!;
+      months.push({
+        key: `${year}-${month}`,
+        label: name.charAt(0).toUpperCase() + name.slice(1),
+        days,
+      });
+    }
+  }
+  return months;
+}
+
 /** Weekdays (Mon-Fri) from today onward, for the next two weeks. */
 export function upcomingWeekdays(): string[] {
   const days: string[] = [];
