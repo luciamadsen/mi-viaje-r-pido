@@ -44,7 +44,10 @@ type Reservation = {
 type Confirmation = { name: string; stop: string; days: string[] };
 
 function Index() {
-  const months = useMemo(() => upcomingMonths(3), []);
+  const months = useMemo(() => {
+    const now = new Date();
+    return upcomingMonths(12 - now.getMonth()); // hasta diciembre inclusive
+  }, []);
   const days = useMemo(() => months.flatMap((m) => m.days), [months]);
   const [selectedMonth, setSelectedMonth] = useState(() => months[0]?.key ?? "");
   const [selectedDay, setSelectedDay] = useState(() => days[0] ?? toISODate(new Date()));
