@@ -41,7 +41,18 @@ type Reservation = {
   stop: string;
 };
 
-type Confirmation = { name: string; stop: string; days: string[] };
+type Confirmation = {
+  name: string;
+  stop: string;
+  days: { day: string; code: string }[];
+};
+
+type FoundReservation = {
+  id: string;
+  full_name: string;
+  travel_date: string;
+  stop: string;
+};
 
 function Index() {
   const months = useMemo(() => {
