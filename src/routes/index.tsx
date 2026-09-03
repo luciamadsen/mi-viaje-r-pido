@@ -172,8 +172,27 @@ function Index() {
       {/* Day selector */}
       <section className="-mt-5 px-3">
         <div className="rounded-2xl bg-card p-3 shadow-[var(--shadow-card)]">
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {days.map((d) => {
+          <div className="mb-2 grid grid-cols-3 gap-2">
+            {months.map((m) => (
+              <button
+                key={m.key}
+                type="button"
+                onClick={() => {
+                  setSelectedMonth(m.key);
+                  setSelectedDay(m.days[0] ?? selectedDay);
+                }}
+                className={`rounded-xl border px-2 py-2 text-sm font-semibold transition-colors ${
+                  m.key === selectedMonth
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-background text-foreground hover:bg-secondary"
+                }`}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {visibleDays.map((d) => {
               const active = d === selectedDay;
               const count = countFor(d);
               return (
