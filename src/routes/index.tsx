@@ -166,8 +166,40 @@ function Index() {
     setError(notes.length > 0 ? notes.join(" ") : null);
   }
 
-  async function cancel(id: string) {
-    await supabase.from("reservations").delete().eq("id", id);
+  async function searchCode(e: React.FormEvent) {
+    e.preventDefault();
+    setCancelError(null);
+    setCancelDone(false);
+    setFound(null);
+    const clean = codeInput.trim().toUpperCase();
+    if (!clean) {
+      setCancelError("Ingresá tu código de cancelación.");
+      return;
+    }
+    setCancelBusy(true);
+    const { data } = await supabase.rpc("find_reservation_by_code", { _code: clean });
+    setCancelBusy(false);
+    const row = (data as FoundReservation[] | null)?.[0];
+    if (!row) {
+      setCancelError("❌ No encontramos una reserva con ese código. Revisalo e intentá nuevamente.");
+      return;
+    }
+    setFound(row);
+  }
+
+  async function confirmCancel() {
+    setCancelBusy(true);
+    const { data, error: rpcError } = await supabase.rpc("cancel_reservation_by_code", {
+      _code: codeInput.trim().toUpperCase(),
+    });
+    setCancelBusy(false);
+    if (rpcError || !data) {
+      setCancelError("❌ No encontramos una reserva con ese código. Revisalo e intentá nuevamente.");
+      return;
+    }
+    setFound(null);
+    setCodeInput("");
+    setCancelDone(true);
     await load();
   }
 
