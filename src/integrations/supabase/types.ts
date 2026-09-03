@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       reservations: {
         Row: {
+          cancel_code: string
           created_at: string
           full_name: string
           id: string
@@ -23,6 +24,7 @@ export type Database = {
           travel_date: string
         }
         Insert: {
+          cancel_code: string
           created_at?: string
           full_name: string
           id?: string
@@ -30,6 +32,7 @@ export type Database = {
           travel_date: string
         }
         Update: {
+          cancel_code?: string
           created_at?: string
           full_name?: string
           id?: string
@@ -43,7 +46,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cancel_reservation_by_code: { Args: { _code: string }; Returns: boolean }
+      create_reservation: {
+        Args: { _full_name: string; _stop: string; _travel_date: string }
+        Returns: string
+      }
+      find_reservation_by_code: {
+        Args: { _code: string }
+        Returns: {
+          full_name: string
+          id: string
+          stop: string
+          travel_date: string
+        }[]
+      }
+      generate_cancel_code: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never

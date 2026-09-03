@@ -41,7 +41,18 @@ type Reservation = {
   stop: string;
 };
 
-type Confirmation = { name: string; stop: string; days: string[] };
+type Confirmation = {
+  name: string;
+  stop: string;
+  days: { day: string; code: string }[];
+};
+
+type FoundReservation = {
+  id: string;
+  full_name: string;
+  travel_date: string;
+  stop: string;
+};
 
 function Index() {
   const months = useMemo(() => {
@@ -61,6 +72,14 @@ function Index() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
+
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [codeInput, setCodeInput] = useState("");
+  const [found, setFound] = useState<FoundReservation | null>(null);
+  const [cancelError, setCancelError] = useState<string | null>(null);
+  const [cancelBusy, setCancelBusy] = useState(false);
+  const [cancelDone, setCancelDone] = useState(false);
+
 
   const load = useCallback(async () => {
     const { data } = await supabase
@@ -121,17 +140,20 @@ function Index() {
     }
 
     setSubmitting(true);
-    const created: string[] = [];
+    const created: { day: string; code: string }[] = [];
     const full: string[] = [];
     const duplicated: string[] = [];
 
     for (const day of targetDays) {
-      const { error: insertError } = await supabase
-        .from("reservations")
-        .insert({ full_name: cleanName, travel_date: day, stop });
-      if (!insertError) created.push(day);
-      else if (insertError.message.includes("CAPACITY_FULL")) full.push(day);
-      else if (insertError.code === "23505") duplicated.push(day);
+      const { data: code, error: insertError } = await supabase.rpc("create_reservation", {
+        _full_name: cleanName,
+        _travel_date: day,
+        _stop: stop,
+      });
+      if (!insertError && code) created.push({ day, code });
+      else if (insertError?.message.includes("CAPACITY_FULL")) full.push(day);
+      else if (insertError?.code === "23505" || insertError?.message.includes("duplicate"))
+        duplicated.push(day);
       else full.push(day);
     }
 
@@ -152,8 +174,40 @@ function Index() {
     setError(notes.length > 0 ? notes.join(" ") : null);
   }
 
-  async function cancel(id: string) {
-    await supabase.from("reservations").delete().eq("id", id);
+  async function searchCode(e: React.FormEvent) {
+    e.preventDefault();
+    setCancelError(null);
+    setCancelDone(false);
+    setFound(null);
+    const clean = codeInput.trim().toUpperCase();
+    if (!clean) {
+      setCancelError("Ingresá tu código de cancelación.");
+      return;
+    }
+    setCancelBusy(true);
+    const { data } = await supabase.rpc("find_reservation_by_code", { _code: clean });
+    setCancelBusy(false);
+    const row = (data as FoundReservation[] | null)?.[0];
+    if (!row) {
+      setCancelError("❌ No encontramos una reserva con ese código. Revisalo e intentá nuevamente.");
+      return;
+    }
+    setFound(row);
+  }
+
+  async function confirmCancel() {
+    setCancelBusy(true);
+    const { data, error: rpcError } = await supabase.rpc("cancel_reservation_by_code", {
+      _code: codeInput.trim().toUpperCase(),
+    });
+    setCancelBusy(false);
+    if (rpcError || !data) {
+      setCancelError("❌ No encontramos una reserva con ese código. Revisalo e intentá nuevamente.");
+      return;
+    }
+    setFound(null);
+    setCodeInput("");
+    setCancelDone(true);
     await load();
   }
 
@@ -264,13 +318,6 @@ function Index() {
                       className="flex items-center justify-between rounded-lg bg-secondary px-3 py-2"
                     >
                       <span className="text-sm font-medium">{r.full_name}</span>
-                      <button
-                        type="button"
-                        onClick={() => void cancel(r.id)}
-                        className="text-xs font-semibold text-destructive hover:underline"
-                      >
-                        Cancelar
-                      </button>
                     </li>
                   ))}
                 </ul>
@@ -290,19 +337,40 @@ function Index() {
                 <dt className="text-muted-foreground">Nombre:</dt>
                 <dd className="font-semibold">{confirmation.name}</dd>
               </div>
-              <div className="flex gap-2">
-                <dt className="text-muted-foreground">
-                  {confirmation.days.length > 1 ? "Días:" : "Día:"}
-                </dt>
-                <dd className="font-semibold">
-                  {confirmation.days.map((d) => longLabel(d)).join(" · ")}
-                </dd>
-              </div>
               <div className="flex flex-col">
                 <dt className="text-muted-foreground">Parada:</dt>
                 <dd className="font-semibold">{confirmation.stop}</dd>
               </div>
             </dl>
+
+            <div className="mt-3">
+              <p className="text-sm text-muted-foreground">
+                {confirmation.days.length > 1
+                  ? "Días y códigos de cancelación:"
+                  : "Día y código de cancelación:"}
+              </p>
+              <ul className="mt-2 space-y-2">
+                {confirmation.days.map((d) => (
+                  <li
+                    key={d.code}
+                    className="flex items-center justify-between gap-3 rounded-xl bg-card px-3 py-2"
+                  >
+                    <span className="text-sm font-semibold">{longLabel(d.day)}</span>
+                    <button
+                      type="button"
+                      onClick={() => void navigator.clipboard?.writeText(d.code)}
+                      className="rounded-lg border border-border px-3 py-1 font-mono text-base font-bold tracking-[0.15em]"
+                      title="Tocá para copiar"
+                    >
+                      {d.code}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 rounded-xl bg-accent/25 p-3 text-sm font-medium">
+                🔑 Guardá este código. Lo vas a necesitar si querés cancelar tu reserva.
+              </p>
+            </div>
             <p className="mt-4 rounded-xl bg-accent/25 p-3 text-sm">
               ⚠️ Si no volvés en combi, avisá por el grupo de WhatsApp.
             </p>
