@@ -304,19 +304,40 @@ function Index() {
                 <dt className="text-muted-foreground">Nombre:</dt>
                 <dd className="font-semibold">{confirmation.name}</dd>
               </div>
-              <div className="flex gap-2">
-                <dt className="text-muted-foreground">
-                  {confirmation.days.length > 1 ? "Días:" : "Día:"}
-                </dt>
-                <dd className="font-semibold">
-                  {confirmation.days.map((d) => longLabel(d)).join(" · ")}
-                </dd>
-              </div>
               <div className="flex flex-col">
                 <dt className="text-muted-foreground">Parada:</dt>
                 <dd className="font-semibold">{confirmation.stop}</dd>
               </div>
             </dl>
+
+            <div className="mt-3">
+              <p className="text-sm text-muted-foreground">
+                {confirmation.days.length > 1
+                  ? "Días y códigos de cancelación:"
+                  : "Día y código de cancelación:"}
+              </p>
+              <ul className="mt-2 space-y-2">
+                {confirmation.days.map((d) => (
+                  <li
+                    key={d.code}
+                    className="flex items-center justify-between gap-3 rounded-xl bg-card px-3 py-2"
+                  >
+                    <span className="text-sm font-semibold">{longLabel(d.day)}</span>
+                    <button
+                      type="button"
+                      onClick={() => void navigator.clipboard?.writeText(d.code)}
+                      className="rounded-lg border border-border px-3 py-1 font-mono text-base font-bold tracking-[0.15em]"
+                      title="Tocá para copiar"
+                    >
+                      {d.code}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 rounded-xl bg-accent/25 p-3 text-sm font-medium">
+                🔑 Guardá este código. Lo vas a necesitar si querés cancelar tu reserva.
+              </p>
+            </div>
             <p className="mt-4 rounded-xl bg-accent/25 p-3 text-sm">
               ⚠️ Si no volvés en combi, avisá por el grupo de WhatsApp.
             </p>
