@@ -44,7 +44,10 @@ type Reservation = {
 type Confirmation = { name: string; stop: string; days: string[] };
 
 function Index() {
-  const months = useMemo(() => upcomingMonths(3), []);
+  const months = useMemo(() => {
+    const now = new Date();
+    return upcomingMonths(12 - now.getMonth()); // hasta diciembre inclusive
+  }, []);
   const days = useMemo(() => months.flatMap((m) => m.days), [months]);
   const [selectedMonth, setSelectedMonth] = useState(() => months[0]?.key ?? "");
   const [selectedDay, setSelectedDay] = useState(() => days[0] ?? toISODate(new Date()));
@@ -172,7 +175,7 @@ function Index() {
       {/* Day selector */}
       <section className="-mt-5 px-3">
         <div className="rounded-2xl bg-card p-3 shadow-[var(--shadow-card)]">
-          <div className="mb-2 grid grid-cols-3 gap-2">
+          <div className="mb-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
             {months.map((m) => (
               <button
                 key={m.key}
