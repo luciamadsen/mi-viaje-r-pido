@@ -73,6 +73,14 @@ function Index() {
   const [error, setError] = useState<string | null>(null);
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
 
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [codeInput, setCodeInput] = useState("");
+  const [found, setFound] = useState<FoundReservation | null>(null);
+  const [cancelError, setCancelError] = useState<string | null>(null);
+  const [cancelBusy, setCancelBusy] = useState(false);
+  const [cancelDone, setCancelDone] = useState(false);
+
+
   const load = useCallback(async () => {
     const { data } = await supabase
       .from("reservations")
