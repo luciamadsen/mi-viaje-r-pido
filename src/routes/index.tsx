@@ -118,7 +118,10 @@ function Index() {
       list.push(r);
       map.set(r.stop, list);
     }
-    return [...map.entries()].sort((a, b) => b[1].length - a[1].length);
+    const order = new Map<string, number>(STOPS.map((s, i) => [s, i]));
+    return [...map.entries()].sort(
+      (a, b) => (order.get(a[0]) ?? STOPS.length) - (order.get(b[0]) ?? STOPS.length),
+    );
   }, [dayReservations]);
 
   const occupied = dayReservations.length;
