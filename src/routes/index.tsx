@@ -469,6 +469,100 @@ function Index() {
           </p>
         </form>
       </section>
+
+      {/* Cancelar una reserva */}
+      <section className="px-3 pt-4">
+        <div className="rounded-2xl bg-card p-5 shadow-[var(--shadow-card)]">
+          <button
+            type="button"
+            onClick={() => {
+              setCancelOpen((v) => !v);
+              setCancelError(null);
+              setCancelDone(false);
+              setFound(null);
+            }}
+            className="flex w-full items-center justify-between gap-2 text-left"
+          >
+            <span className="text-lg font-bold">Cancelar una reserva</span>
+            <span className="text-sm text-muted-foreground">{cancelOpen ? "▲" : "▼"}</span>
+          </button>
+
+          {cancelOpen && (
+            <div className="mt-4">
+              {!found && (
+                <form onSubmit={searchCode} className="space-y-3">
+                  <label htmlFor="code" className="text-sm font-medium">
+                    Código de cancelación
+                  </label>
+                  <input
+                    id="code"
+                    value={codeInput}
+                    onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+                    placeholder="Ej: K7M2QP"
+                    autoCapitalize="characters"
+                    className="w-full rounded-xl border border-input bg-background px-3 py-3 font-mono text-base tracking-[0.15em] outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+                  />
+                  <button
+                    type="submit"
+                    disabled={cancelBusy}
+                    className="w-full rounded-xl border border-border bg-secondary px-4 py-3 text-base font-bold disabled:opacity-60"
+                  >
+                    {cancelBusy ? "Buscando…" : "Buscar reserva"}
+                  </button>
+                </form>
+              )}
+
+              {found && (
+                <div className="rounded-xl border border-border p-4">
+                  <p className="text-base font-bold">¿Querés cancelar esta reserva?</p>
+                  <dl className="mt-3 space-y-1 text-sm">
+                    <div className="flex gap-2">
+                      <dt className="text-muted-foreground">Nombre:</dt>
+                      <dd className="font-semibold">{found.full_name}</dd>
+                    </div>
+                    <div className="flex gap-2">
+                      <dt className="text-muted-foreground">Día:</dt>
+                      <dd className="font-semibold">{longLabel(found.travel_date)}</dd>
+                    </div>
+                    <div className="flex flex-col">
+                      <dt className="text-muted-foreground">Parada:</dt>
+                      <dd className="font-semibold">{found.stop}</dd>
+                    </div>
+                  </dl>
+                  <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <button
+                      type="button"
+                      disabled={cancelBusy}
+                      onClick={() => void confirmCancel()}
+                      className="rounded-xl bg-destructive px-4 py-3 text-base font-bold text-destructive-foreground disabled:opacity-60"
+                    >
+                      Sí, cancelar reserva
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFound(null)}
+                      className="rounded-xl border border-border bg-background px-4 py-3 text-base font-bold"
+                    >
+                      Volver
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {cancelError && (
+                <p className="mt-3 rounded-xl bg-destructive/10 p-3 text-sm text-destructive">
+                  {cancelError}
+                </p>
+              )}
+              {cancelDone && (
+                <p className="mt-3 rounded-xl border border-success/30 bg-success/10 p-3 text-sm font-semibold">
+                  ✅ Reserva cancelada correctamente.
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
     </main>
   );
 }
