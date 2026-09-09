@@ -131,3 +131,32 @@ export function stopShortName(stop: string): string {
   const head = stop.split(" - ")[0] ?? stop;
   return head.replace(/^Av\.\s*/i, "").toUpperCase();
 }
+
+export const MONTH_LABELS = MONTH_NAMES;
+
+/** Title like "SEPTIEMBRE 2026". */
+export function monthTitle(year: number, month: number): string {
+  return `${MONTH_NAMES[month]!.toUpperCase()} ${year}`;
+}
+
+/** Weeks (Mon-Sun) of a month; null for padding cells. */
+export function monthMatrix(year: number, month: number): (string | null)[][] {
+  const first = new Date(year, month, 1);
+  const pad = (first.getDay() + 6) % 7;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const cells: (string | null)[] = Array.from({ length: pad }, () => null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push(toISODate(new Date(year, month, d)));
+  while (cells.length % 7 !== 0) cells.push(null);
+  const weeks: (string | null)[][] = [];
+  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
+  return weeks;
+}
+
+/** Selectable = weekday (Mon-Fri) and today or later. */
+export function isSelectableDay(iso: string): boolean {
+  const d = parseISODate(iso);
+  const dow = d.getDay();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return dow >= 1 && dow <= 5 && iso >= toISODate(today);
+}
