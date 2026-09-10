@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
+  CAPACITY,
   STOPS,
   isSelectableDay,
   longLabel,
@@ -93,7 +94,10 @@ function ReservarPage() {
       setStop("");
     }
     const notes: string[] = [];
-    if (failed.length > 0) notes.push(`Sin lugar (30/30) en: ${failed.map(shortLabel).join(", ")}.`);
+    if (failed.length > 0)
+      notes.push(
+        `Sin lugar (${CAPACITY}/${CAPACITY}) en: ${failed.map(shortLabel).join(", ")}.`,
+      );
     if (duplicated.length > 0)
       notes.push(`Ya estabas anotado en: ${duplicated.map(shortLabel).join(", ")}.`);
     setError(notes.length > 0 ? notes.join(" ") : null);
@@ -128,7 +132,7 @@ function ReservarPage() {
             <ul className="mt-3 space-y-2">
               {confirmation.days.map((d) => (
                 <li
-                  key={d.code}
+                  key={d.day}
                   className="flex items-center justify-between gap-3 rounded-xl bg-card px-3 py-2"
                 >
                   <span className="text-sm font-semibold">{longLabel(d.day)}</span>
