@@ -93,7 +93,10 @@ function ReservarPage() {
       setStop("");
     }
     const notes: string[] = [];
-    if (failed.length > 0) notes.push(`Sin lugar (30/30) en: ${failed.map(shortLabel).join(", ")}.`);
+    if (failed.length > 0)
+      notes.push(
+        `Sin lugar (${CAPACITY}/${CAPACITY}) en: ${failed.map(shortLabel).join(", ")}.`,
+      );
     if (duplicated.length > 0)
       notes.push(`Ya estabas anotado en: ${duplicated.map(shortLabel).join(", ")}.`);
     setError(notes.length > 0 ? notes.join(" ") : null);
