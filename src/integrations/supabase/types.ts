@@ -46,12 +46,25 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cancel_reservation: {
+        Args: { _code: string; _id: string }
+        Returns: boolean
+      }
       cancel_reservation_by_code: { Args: { _code: string }; Returns: boolean }
       create_reservation: {
         Args: { _full_name: string; _stop: string; _travel_date: string }
         Returns: string
       }
       find_reservation_by_code: {
+        Args: { _code: string }
+        Returns: {
+          full_name: string
+          id: string
+          stop: string
+          travel_date: string
+        }[]
+      }
+      find_reservations_by_code: {
         Args: { _code: string }
         Returns: {
           full_name: string
