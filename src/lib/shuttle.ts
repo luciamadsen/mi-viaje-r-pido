@@ -127,10 +127,17 @@ export function weekDaysOf(iso: string, available: string[]): string[] {
   });
 }
 
-/** Short name of a stop, e.g. "CABILDO 3511". */
+/** Departure time of a stop, e.g. "07:07". */
+export function stopTime(stop: string): string {
+  return stop.split("–")[0]?.trim() ?? "";
+}
+
+/** Short name of a stop, e.g. "07:07 · CABILDO Y NUÑEZ". */
 export function stopShortName(stop: string): string {
-  const head = stop.split(" - ")[0] ?? stop;
-  return head.replace(/^Av\.\s*/i, "").toUpperCase();
+  const parts = stop.split("–").map((p) => p.trim());
+  const time = parts[0] ?? "";
+  const place = (parts[1] ?? stop).replace(/^Av\.\s*/i, "").toUpperCase();
+  return time ? `${time} · ${place}` : place;
 }
 
 export const MONTH_LABELS = MONTH_NAMES;
