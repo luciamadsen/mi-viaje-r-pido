@@ -1,18 +1,19 @@
+/** Paradas en orden de recorrido, con el horario primero. */
 export const STOPS = [
-  "Av. Antártida Argentina 1160 - Esquina Coto (entre Gendarmería y Coto)",
-  "Av. del Libertador 98 - Puesto de bicicletas GBA de la ciudad",
-  "Bouchard 557 - Parada de colectivo, frente a Torre Bouchard",
-  "Av. Córdoba 3789 - Carnicería RES (esquina Córdoba y Medrano)",
-  "Av. Santa Fe 4387 - Pasando la rotonda, cartel publicitario",
-  "Av. Santa Fe 4799 - Parada de colectivo sobre Santa Fe",
-  "Av. Dorrego 2762 - Puesto de diarios",
-  "Av. Cabildo 459 - Banco ISBC / Diagnóstico Maipú",
-  "Av. Cabildo 2877 - Puesto de diarios",
-  "Av. Cabildo 3511 - YPF",
-  "Av. Cabildo 4963 - GNC",
+  "06:15 – Av. Antártida Argentina y Gendarmería Nacional – Esquina COTO",
+  "06:25 – Bouchard 557, CABA – Frente a Torre Bouchard",
+  "06:30 – Av. del Libertador 98, CABA – Puesto bicicletas Gob de la Ciudad",
+  "06:35 – Av. Córdoba y Medrano – Carnicería RES",
+  "06:40 – Plaza Italia – Pasando rotonda cartel publicitario",
+  "06:43 – Av. Santa Fé y Av. Int. Bullrich – Parada colectivo sobre Santa Fé",
+  "06:55 – Av. Dorrego 2762 – Puesto de diarios",
+  "06:58 – Av. Cabildo (Entre Jorge Newbery y Maure) – Bco. ISBC - Diagnóstico Maipú",
+  "07:05 – Av. Cabildo 2877 (Esq. Congreso) – Puesto de flores",
+  "07:07 – Av. Cabildo y Nuñez – YPF",
+  "07:15 – Av. Cabildo 4899 – GNC",
 ] as const;
 
-export const CAPACITY = 30;
+export const CAPACITY = 24;
 
 const DAY_NAMES = [
   "Domingo",
