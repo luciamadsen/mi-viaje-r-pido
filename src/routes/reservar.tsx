@@ -132,7 +132,7 @@ function ReservarPage() {
             <ul className="mt-3 space-y-2">
               {confirmation.days.map((d) => (
                 <li
-                  key={d.code}
+                  key={d.day}
                   className="flex items-center justify-between gap-3 rounded-xl bg-card px-3 py-2"
                 >
                   <span className="text-sm font-semibold">{longLabel(d.day)}</span>
