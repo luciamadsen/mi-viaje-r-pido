@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   CAPACITY,
   STOPS,
+  isBookingOpen,
   isSelectableDay,
   longLabel,
   monthMatrix,
