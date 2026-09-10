@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   CAPACITY,
   STOPS,
+  isBookingOpen,
   isSelectableDay,
   longLabel,
   monthMatrix,
@@ -70,14 +71,20 @@ function ReservarPage() {
     const created: { day: string; code: string }[] = [];
     const failed: string[] = [];
     const duplicated: string[] = [];
+    const closed: string[] = [];
 
     for (const day of sortedSelected) {
+      if (!isBookingOpen(day)) {
+        closed.push(day);
+        continue;
+      }
       const { data: code, error: insertError } = await supabase.rpc("create_reservation", {
         _full_name: cleanName,
         _travel_date: day,
         _stop: stop,
       });
       if (!insertError && code) created.push({ day, code });
+      else if (insertError?.message.includes("BOOKING_CLOSED")) closed.push(day);
       else if (insertError?.code === "23505" || insertError?.message.includes("duplicate"))
         duplicated.push(day);
       else failed.push(day);
@@ -100,8 +107,15 @@ function ReservarPage() {
       );
     if (duplicated.length > 0)
       notes.push(`Ya estabas anotado en: ${duplicated.map(shortLabel).join(", ")}.`);
+    if (closed.length > 0)
+      notes.push(
+        `Las reservas cierran a las 05:00 del mismo día. Ya cerraron para: ${closed
+          .map(shortLabel)
+          .join(", ")}.`,
+      );
     setError(notes.length > 0 ? notes.join(" ") : null);
   }
+
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-lg pb-16">

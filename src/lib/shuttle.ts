@@ -160,11 +160,39 @@ export function monthMatrix(year: number, month: number): (string | null)[][] {
   return weeks;
 }
 
-/** Selectable = weekday (Mon-Fri) and today or later. */
-export function isSelectableDay(iso: string): boolean {
-  const d = parseISODate(iso);
-  const dow = d.getDay();
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return dow >= 1 && dow <= 5 && iso >= toISODate(today);
+/** Fecha y hora actual en Argentina (como Date "local" equivalente). */
+export function argentinaNow(): { iso: string; hour: number; minute: number } {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Argentina/Buenos_Aires",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(new Date());
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "00";
+  return {
+    iso: `${get("year")}-${get("month")}-${get("day")}`,
+    hour: Number(get("hour")) % 24,
+    minute: Number(get("minute")),
+  };
 }
+
+/** Hora de cierre de reservas para el día del viaje. */
+export const CUTOFF_HOUR = 5;
+
+/** Las reservas de un día cierran a las 05:00 (hora Argentina) de ese mismo día. */
+export function isBookingOpen(iso: string): boolean {
+  const now = argentinaNow();
+  if (iso > now.iso) return true;
+  if (iso < now.iso) return false;
+  return now.hour < CUTOFF_HOUR;
+}
+
+/** Selectable = weekday (Mon-Fri) y con las reservas todavía abiertas. */
+export function isSelectableDay(iso: string): boolean {
+  const dow = parseISODate(iso).getDay();
+  return dow >= 1 && dow <= 5 && isBookingOpen(iso);
+}
+
