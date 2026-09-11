@@ -88,18 +88,18 @@ function ReservasPage() {
   }, [reservations]);
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-lg pb-16">
+    <main className="mx-auto min-h-screen w-full max-w-lg pb-20">
       <header
-        className="px-5 pb-8 pt-9 text-primary-foreground"
+        className="px-6 pb-12 pt-14 text-primary-foreground"
         style={{ background: "var(--gradient-header)" }}
       >
-        <Link to="/" className="text-xs font-semibold uppercase tracking-[0.2em] opacity-80">
+        <Link to="/" className="text-xs font-semibold uppercase tracking-[0.25em] opacity-75">
           ← Inicio
         </Link>
-        <h1 className="mt-2 text-2xl font-bold">Reservas del día</h1>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight">Reservas del día</h1>
       </header>
 
-      <section className="-mt-5 space-y-3 px-3">
+      <section className="-mt-6 space-y-4 px-4">
         {loading && (
           <div className="rounded-2xl bg-card p-5 text-sm text-muted-foreground shadow-[var(--shadow-card)]">
             Cargando reservas…
@@ -112,7 +112,7 @@ function ReservasPage() {
         )}
 
         {byDay.map(({ day, total, groups }) => (
-          <div key={day} className="rounded-2xl bg-card p-5 shadow-[var(--shadow-card)]">
+          <div key={day} className="rounded-2xl bg-card p-6 shadow-[var(--shadow-card)]">
             <div className="flex items-baseline justify-between gap-2">
               <h2 className="text-base font-bold uppercase">
                 {longLabel(day)}
@@ -127,7 +127,7 @@ function ReservasPage() {
               </span>
             </div>
 
-            <div className="mt-4 space-y-4">
+            <div className="mt-5 space-y-5">
               {groups.map(([stopName, list]) => (
                 <div key={stopName}>
                   <div className="flex items-baseline justify-between gap-2">
