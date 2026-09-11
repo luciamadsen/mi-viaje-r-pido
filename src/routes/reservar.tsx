@@ -130,10 +130,17 @@ function ReservarPage() {
       </header>
 
       {confirmation && (
-        <section className="-mt-5 px-3">
-          <div className="rounded-2xl border border-success/30 bg-success/10 p-5">
-            <h2 className="text-base font-bold">✅ Reserva confirmada</h2>
-            <dl className="mt-3 space-y-1 text-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 p-4">
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="max-h-[85vh] w-full max-w-md overflow-y-auto rounded-2xl bg-card p-6 shadow-[var(--shadow-modal)]"
+          >
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-success/15 text-xl">
+              ✅
+            </div>
+            <h2 className="mt-3 text-center text-lg font-bold">Reserva confirmada</h2>
+            <dl className="mt-4 space-y-1 text-sm">
               <div className="flex gap-2">
                 <dt className="text-muted-foreground">Nombre:</dt>
                 <dd className="font-semibold">{confirmation.name}</dd>
@@ -143,17 +150,17 @@ function ReservarPage() {
                 <dd className="font-semibold">{confirmation.stop}</dd>
               </div>
             </dl>
-            <ul className="mt-3 space-y-2">
+            <ul className="mt-4 space-y-2">
               {confirmation.days.map((d) => (
                 <li
                   key={d.day}
-                  className="flex items-center justify-between gap-3 rounded-xl bg-card px-3 py-2"
+                  className="flex items-center justify-between gap-3 rounded-xl border border-border px-3 py-2"
                 >
                   <span className="text-sm font-semibold">{longLabel(d.day)}</span>
                   <button
                     type="button"
                     onClick={() => void navigator.clipboard?.writeText(d.code)}
-                    className="rounded-lg border border-border px-3 py-1 font-mono text-base font-bold tracking-[0.15em]"
+                    className="rounded-lg bg-secondary px-3 py-1 font-mono text-base font-bold tracking-[0.15em]"
                     title="Tocá para copiar"
                   >
                     {d.code}
@@ -161,18 +168,25 @@ function ReservarPage() {
                 </li>
               ))}
             </ul>
-            <p className="mt-3 rounded-xl bg-accent/25 p-3 text-sm font-medium">
+            <p className="mt-4 rounded-xl bg-accent/25 p-3 text-sm font-medium">
               🔑 Guardá este código. Lo vas a necesitar si querés cancelar tu reserva.
             </p>
-            <p className="mt-3 rounded-xl bg-accent/25 p-3 text-sm">
+            <p className="mt-2 rounded-xl bg-accent/25 p-3 text-sm">
               ⚠️ Si no volvés en combi, avisá por el grupo de WhatsApp.
             </p>
+            <button
+              type="button"
+              onClick={() => setConfirmation(null)}
+              className="mt-4 w-full rounded-xl bg-primary px-4 py-3 text-base font-bold text-primary-foreground"
+            >
+              Listo
+            </button>
           </div>
-        </section>
+        </div>
       )}
 
       {/* Calendario */}
-      <section className={confirmation ? "px-3 pt-4" : "-mt-5 px-3"}>
+      <section className="-mt-5 px-3">
         <div className="rounded-2xl bg-card p-4 shadow-[var(--shadow-card)]">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase tracking-wide">
