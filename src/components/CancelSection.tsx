@@ -60,7 +60,7 @@ export function CancelSection({ onCancelled }: { onCancelled?: () => void }) {
   }
 
   return (
-    <div className="rounded-2xl bg-card p-5 shadow-[var(--shadow-card)]">
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
       <button
         type="button"
         onClick={() => {

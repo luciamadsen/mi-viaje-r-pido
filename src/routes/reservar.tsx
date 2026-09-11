@@ -118,15 +118,15 @@ function ReservarPage() {
 
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-lg pb-16">
+    <main className="mx-auto min-h-screen w-full max-w-lg pb-20">
       <header
-        className="px-5 pb-8 pt-9 text-primary-foreground"
+        className="px-6 pb-12 pt-14 text-primary-foreground"
         style={{ background: "var(--gradient-header)" }}
       >
-        <Link to="/" className="text-xs font-semibold uppercase tracking-[0.2em] opacity-80">
+        <Link to="/" className="text-xs font-semibold uppercase tracking-[0.25em] opacity-75">
           ← Inicio
         </Link>
-        <h1 className="mt-2 text-2xl font-bold">Reservar asiento</h1>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight">Reservar asiento</h1>
       </header>
 
       {confirmation && (
@@ -186,8 +186,8 @@ function ReservarPage() {
       )}
 
       {/* Calendario */}
-      <section className="-mt-5 px-3">
-        <div className="rounded-2xl bg-card p-4 shadow-[var(--shadow-card)]">
+      <section className="-mt-6 px-4">
+        <div className="rounded-2xl bg-card p-5 shadow-[var(--shadow-card)]">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold uppercase tracking-wide">
               {monthTitle(year, month)}
@@ -253,8 +253,8 @@ function ReservarPage() {
       </section>
 
       {/* Datos */}
-      <section className="px-3 pt-4">
-        <div className="space-y-4 rounded-2xl bg-card p-5 shadow-[var(--shadow-card)]">
+      <section className="px-4 pt-4">
+        <div className="space-y-5 rounded-2xl bg-card p-6 shadow-[var(--shadow-card)]">
           <div>
             <label htmlFor="name" className="text-sm font-medium">
               Nombre y apellido
@@ -290,8 +290,8 @@ function ReservarPage() {
       </section>
 
       {/* Resumen */}
-      <section className="px-3 pt-4">
-        <div className="rounded-2xl bg-card p-5 shadow-[var(--shadow-card)]">
+      <section className="px-4 pt-4">
+        <div className="rounded-2xl bg-card p-6 shadow-[var(--shadow-card)]">
           <h2 className="text-sm font-bold uppercase tracking-wide">Estás reservando</h2>
           <ul className="mt-3 space-y-1 text-sm">
             {sortedSelected.length === 0 && (
